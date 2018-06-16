@@ -23,7 +23,6 @@ class AppUserFixtures extends Fixture
      */
     public function load(ObjectManager $manager)
     {
-
         for ($i = 0; $i <= 3; $i++) {
             $user = new User();
 
