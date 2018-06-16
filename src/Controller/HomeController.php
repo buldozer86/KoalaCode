@@ -11,13 +11,13 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class HomeController extends AbstractController
 {
-//    /**
-//     * @Route("/")
-//    */
-//    public function index()
-//    {
-//        return new Response('<h1>Hello world</h1>');
-//    }
+    /**
+     * @Route("/")
+    */
+    public function index()
+    {
+        return $this->render('base.html.twig');
+    }
 
     /**
      * @Route("/login", name="login")
