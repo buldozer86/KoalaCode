@@ -4,13 +4,15 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="user")
  */
-class User
+class User implements UserInterface, \Serializable, AdvancedUserInterface
 {
     /**
      * @var int
@@ -47,7 +49,7 @@ class User
     private $lastName;
 
     /**
-     * @ORM\Column(type="text", name="description")
+     * @ORM\Column(type="text", name="description", nullable=true)
      */
     private $description;
 
@@ -62,54 +64,69 @@ class User
     private $createDate;
 
     /**
-     * @ORM\Column(type="integer", name="delete_by_id")
+     * @ORM\Column(type="integer", name="delete_by_id", nullable=true)
      */
     private $deleteById;
 
     /**
-     * @ORM\Column(type="integer", name="delete_by")
+     * @ORM\Column(type="integer", name="delete_by", nullable=true)
      */
     private $deleteBy;
 
     /**
-     * @ORM\Column(type="datetime", name="delete_data")
+     * @ORM\Column(type="datetime", name="delete_data", nullable=true)
      */
     private $deleteData;
 
     /**
-     * @ORM\Column(type="integer", name="update_by_id")
+     * @ORM\Column(type="integer", name="update_by_id", nullable=true)
      */
     private $updateById;
 
     /**
-     * @ORM\Column(type="integer", name="update_by")
+     * @ORM\Column(type="integer", name="update_by",nullable=true)
      */
     private $updateBy;
 
     /**
-     * @ORM\Column(type="datetime", name="update_date")
+     * @ORM\Column(type="datetime", name="update_date", nullable=true)
      */
     private $updateDate;
 
     /**
-     * @ORM\Column(type="integer", name="banned_by_id")
+     * @ORM\Column(type="integer", name="banned_by_id", nullable=true)
      */
     private $bannedById;
 
     /**
-     * @ORM\Column(type="integer", name="banned_by")
+     * @ORM\Column(type="integer", name="banned_by", nullable=true)
      */
     private $bannedBy;
 
     /**
-     * @ORM\Column(type="datetime", name="banned_date")
+     * @ORM\Column(type="datetime", name="banned_date", nullable=true)
      */
     private $bannedDate;
 
     /**
-     * @ORM\Column(type="integer", name="banned_for")
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @ORM\Column(type="integer", name="banned_for", nullable=true)
      */
     private $bannedFor;
+
+    /**
+     * Initial object
+    */
+    public function __construct()
+    {
+        $this->isActive = true;
+        // may not be needed, see section on salt below
+        // $this->salt = md5(uniqid('', true));
+    }
 
     public function getId(): ?int
     {
@@ -330,5 +347,160 @@ class User
         $this->bannedFor = $bannedFor;
 
         return $this;
+    }
+
+    /**
+     * Returns the roles granted to the user.
+     *
+     * <code>
+     * public function getRoles()
+     * {
+     *     return array('ROLE_USER');
+     * }
+     * </code>
+     *
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return (Role|string)[] The user roles
+     */
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
+    }
+
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string|null The salt
+     */
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+        return null;
+    }
+
+    /**
+     * Returns the username used to authenticate the user.
+     *
+     * @return string The username
+     */
+    public function getUsername()
+    {
+        return $this->login;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     * @since 5.1.0
+     */
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->login,
+            $this->password,
+            $this->isActive
+            // see section on salt below
+            // $this->salt,
+        ]);
+    }
+
+    /**
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->login,
+            $this->password,
+            $this->isActive
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized, ['allowed_classes' => false]);
+    }
+
+    /**
+     * Checks whether the user's account has expired.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw an AccountExpiredException and prevent login.
+     *
+     * @return bool true if the user's account is non expired, false otherwise
+     *
+     * @see AccountExpiredException
+     */
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * Checks whether the user is locked.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a LockedException and prevent login.
+     *
+     * @return bool true if the user is not locked, false otherwise
+     *
+     * @see LockedException
+     */
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    /**
+     * Checks whether the user's credentials (password) has expired.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a CredentialsExpiredException and prevent login.
+     *
+     * @return bool true if the user's credentials are non expired, false otherwise
+     *
+     * @see CredentialsExpiredException
+     */
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * Checks whether the user is enabled.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a DisabledException and prevent login.
+     *
+     * @return bool true if the user is enabled, false otherwise
+     *
+     * @see DisabledException
+     */
+    public function isEnabled()
+    {
+        return $this->isActive;
     }
 }

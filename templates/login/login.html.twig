@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Login
+{% endblock %}
+{% block body %}
+    <div class="row">
+        {% if errors %}
+            <div class="alert alert-danger">
+                {{ errors.messageKey }}
+            </div>
+        {% endif %}
+        <form action="{{ path('login') }}" method="post" name="Login_Form" class="form-signin">
+            <h3 class="form-signin-heading">Welcome Back! Please Sign In</h3>
+            <hr class="colorgraph"><br>
+
+            <input type="text" value="{{ username }}" class="form-control" name="_username" placeholder="Username" required="required" autofocus="" />
+            <input type="password" class="form-control" name="_password" placeholder="Password" required="required"/>
+
+            <button class="btn btn-lg btn-primary btn-block"  name="Submit" value="Login" type="Submit">Login</button>
+        </form>
+    </div>
+
+{% endblock %}
