@@ -52,7 +52,7 @@ class User implements UserInterface, \Serializable, AdvancedUserInterface
     private $lastName;
 
     /**
-     * @ORM\Column(type="text", name="description", nullable=true)
+     * @ORM\Column(type="text", name="description")
      */
     private $description;
 

@@ -22,58 +22,5 @@ class HomeController extends AbstractController
         return $this->render('base.html.twig');
     }
 
-    /**
-     * @Route("/login", name="login")
-     */
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils)
-    {
-        $errors = $authenticationUtils->getLastAuthenticationError();
-        $lastUserName = $authenticationUtils->getLastUsername();
 
-        return $this->render('login/login.html.twig', [
-            'errors' => $errors,
-            'username' => $lastUserName
-        ]);
-    }
-
-    /**
-     * @Route("/logout", name="logout")
-    */
-    public function logoutAction()
-    {
-
-    }
-
-    /**
-     * @Route("/registration", name="registration")
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     * @return Response
-     */
-    public function registrationAction(Request $request, UserPasswordEncoderInterface $encoder)
-    {
-        $em   = $this->getDoctrine()->getManager();
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $dataTime = new \DateTime("now");
-
-            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
-            $user->setDescription('Lorem Ipsum is simply dummy text of the printing and typesetting industry.');
-            $user->setKarma(100);
-            $user->setCreateDate($dataTime);
-            $user->setUpdateDate($dataTime);
-            $em->persist($user);
-            $em->flush();
-
-            return $this->redirect('/');
-        }
-
-        return $this->render('registre/registration.html.twig', [
-            'form' => $form->createView()
-        ]);
-    }
 }
