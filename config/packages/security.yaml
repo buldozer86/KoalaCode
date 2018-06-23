@@ -17,6 +17,7 @@ security:
             form_login:
                 login_path: login
                 check_path: login
+                csrf_token_generator: security.csrf.token_manager
 
             logout:
                 path: /logout
@@ -35,5 +36,5 @@ security:
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
         - { path: ^/registration, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY}
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY}
 
