@@ -2,18 +2,30 @@
 namespace App\DataFixtures;
 
 
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppUserFixtures extends Fixture
 {
+    /**
+     * @var UserPasswordEncoderInterface
+    */
     private $encoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    /**
+     * @var ContainerInterface
+    */
+    private $container;
+
+    public function __construct(
+        UserPasswordEncoderInterface $encoder,
+        ContainerInterface $container = null
+    )
     {
         $this->encoder = $encoder;
+        $this->container = $container;
     }
 
     /**
@@ -23,22 +35,20 @@ class AppUserFixtures extends Fixture
      */
     public function load(ObjectManager $manager)
     {
-        for ($i = 0; $i <= 3; $i++) {
-            $user = new User();
+        for ($i = 1; $i <= 3; $i++) {
+            $user = $this->container
+                ->get('user.init_default_data')
+                ->getUserWithDefaultData();
 
             $var = 'user' . $i;
-            $dataTime = new \DateTime("now");
-            $password = $this->encoder->encodePassword($user, $var . $i);
+            $password = $this->encoder
+                ->encodePassword($user, $var . $i);
 
             $user->setLogin($var);
             $user->setPassword($password);
             $user->setFirstName($var . '_firstName');
             $user->setLastName($var . '_lastName');
             $user->setEmail($var . '@mail.com');
-            $user->setDescription('Lorem Ipsum is simply dummy text of the printing and typesetting industry.');
-            $user->setKarma(100);
-            $user->setCreateDate($dataTime);
-            $user->setUpdateDate($dataTime);
 
             $manager->persist($user);
             $manager->flush();

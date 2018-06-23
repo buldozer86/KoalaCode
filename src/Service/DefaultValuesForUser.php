@@ -9,19 +9,6 @@ class DefaultValuesForUser
 {
 
     /**
-     * @var User
-    */
-    protected $user;
-
-    /**
-     * Initial object
-    */
-    public function __construct()
-    {
-        $this->user = new User();
-    }
-
-    /**
      * getting initial user only with default data( without login, pass...)
      * @return User
     */
@@ -31,15 +18,17 @@ class DefaultValuesForUser
     }
 
     /**
+     * Init default data for new user
     */
     protected function initDefaultValues()
     {
+        $user = new User();
         $dataTime = new \DateTime("now");
 
-        $this->user->setKarma(100);
-        $this->user->setCreateDate($dataTime);
-        $this->user->setUpdateDate($dataTime);
+        $user->setKarma(100);
+        $user->setCreateDate($dataTime);
+        $user->setUpdateDate($dataTime);
 
-        return $this->user;
+        return $user;
     }
 }
