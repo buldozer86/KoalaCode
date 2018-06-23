@@ -1,0 +1,13 @@
+$web-font-path: 'data:text/css;base64,';
+
+@import "~bootswatch/dist/superhero/variables";
+@import "~bootstrap/scss/bootstrap";
+//@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+@import "~bootswatch/dist/superhero/bootswatch";
+@import "~font-awesome/scss/font-awesome.scss";
+@import "~highlight.js/styles/solarized-light.css";
+
+// pick the Lato fonts individually to avoid importing the entire font family
+//@import '~lato-font/scss/public-api';
+//@include lato-include-font('normal');
+//@include lato-include-font('bold');

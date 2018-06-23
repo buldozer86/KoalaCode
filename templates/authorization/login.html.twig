@@ -5,20 +5,40 @@
 {% endblock %}
 {% block body %}
     <div class="row">
-        {% if errors %}
-            <div class="alert alert-danger">
-                {{ errors.messageKey }}
+        <div class="col-lg-12">
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    <h3>
+                        Login
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if errors %}
+                        <div class="alert alert-danger">
+                            {{ errors.messageKey }}
+                        </div>
+                    {% endif %}
+
+                    <form action="{{ path('login') }}" method="post" name="Login_Form" class="form-signin">
+                        <fieldset>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <input id="username" type="text" value="{{ username }}" class="form-control" name="_username" placeholder="Login" required="required" autofocus="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <input id="passwprd" type="password" class="form-control" name="_password" placeholder="Password" required="required"/>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary pull-right">Login</button>
+                        </fieldset>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+                    </form>
+
+                </div>
             </div>
-        {% endif %}
-        <form action="{{ path('login') }}" method="post" name="Login_Form" class="form-signin">
-            <h3 class="form-signin-heading">Welcome Back! Please Sign In</h3>
-            <hr class="colorgraph"><br>
+        </div>
 
-            <input type="text" value="{{ username }}" class="form-control" name="_username" placeholder="Username" required="required" autofocus="" />
-            <input type="password" class="form-control" name="_password" placeholder="Password" required="required"/>
-
-            <button class="btn btn-lg btn-primary btn-block"  name="Submit" value="Login" type="Submit">Login</button>
-        </form>
     </div>
 
 {% endblock %}
