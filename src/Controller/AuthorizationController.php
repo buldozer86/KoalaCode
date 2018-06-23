@@ -59,7 +59,7 @@ class AuthorizationController extends Controller
             $em->persist($user);
             $em->flush();
 
-            return $this->redirect('/');
+            return $this->redirect('/login');
         }
 
         return $this->render('authorization/registration.html.twig', [
